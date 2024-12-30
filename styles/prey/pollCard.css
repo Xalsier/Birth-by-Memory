@@ -1,0 +1,77 @@
+
+.pollCard {
+    width: 95%; /* Updated to take full width */
+    margin: 20px 0; /* Adjusted for vertical margin only */
+    padding: 10px;
+    background-color: #191919;
+    color: #fff;
+    background: linear-gradient(to bottom, #191919, #141414); /* Subtle gradient from top to bottom */
+
+    transition: transform 0.2s;
+    animation: slideUp 0.5s ease-out;
+    border: 1px solid #555;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    cursor: pointer;
+    position: relative; /* Needed for positioning metaTag */
+}
+
+.pollTitle {
+    margin-left: 10px;
+    text-align: left;
+    color: #ccc;
+    position: relative; /* Ensure title is relative for absolute positioning of metaTag */
+    padding-right: 60px; /* Give space for the metaTag */
+}
+
+.metaTag {
+    background-color: #ee7600;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    position: absolute; /* Updated for absolute positioning */
+    right: 10px; /* Align to the left */
+    bottom: 10px; /* Align with the top of the title */
+}
+
+.pollContainer {
+    width: 300px;
+    padding: 20px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    background-color: #333;
+    border-radius: 8px;
+}
+
+.pollGrid {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 5px;
+    align-items: center;
+}
+
+.nameLabel {
+    align-self: center;
+}
+
+.progressBarContainer {
+    background-color: #555;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.progressBar {
+    background-color: #fff;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.votesSummary {
+    color: #999;
+    text-align: center;
+    margin-top: 10px;
+}
+

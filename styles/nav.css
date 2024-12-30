@@ -1,0 +1,208 @@
+.search-container input[type="text"] {
+    width: 50%;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ffe66b;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#searchInput {
+    background-color: #ffe66b;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.search1 {
+    display: flex;
+    margin-top: 10px;
+    height: 55px;
+    margin-bottom: 20px;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: nowrap;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #0e0d0cc1;
+    box-shadow: 0px 2px 4px rgba(71, 66, 66, 0.1);
+    align-items: center;
+    justify-content: start;
+}
+
+.search1 button {
+    height: 35px;
+    width: 35px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    font-size: 2em;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    color: #2e2e2e00;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.9s;
+}
+
+.search1 button:hover {
+    opacity: 0.8;
+}
+
+#profileButton {
+    max-width: 35px;
+    max-height: 35px;
+    padding: 10px 20px;
+    display: flex;
+    background-color: #333;
+    align-items: center;
+    overflow: hidden;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px;
+}
+
+
+#profileButton:hover {
+    background-color: #ffe66b;
+}
+
+.box {
+    background-color: #0e0d0c;
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.star {
+    position: absolute;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+/* Initially hide the navCard */
+#navCard {
+    display: none; /* Hidden by default */
+    opacity: 0;
+    gap: 20px;
+    transform: scale(0.8); /* Start smaller */
+    transition: opacity 1s ease, transform 1s ease; /* Smooth transition */
+  }
+  
+  /* Animation for pop-in effect */
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.8); /* Start smaller */
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1); /* Slightly bigger for a pop effect */
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1); /* Set back to normal size */
+    }
+  }
+  
+  /* Class that will be added to trigger the animation */
+  #navCard.open {
+    display: block; /* Make the element visible */
+    animation: popIn 0.3s ease forwards; /* Trigger pop-in animation */
+  }
+  
+  #navCard button {
+    padding: 12px 24px; /* Add more padding for better spacing */
+    border: none; /* Remove the border */
+    border-radius: 10px; /* Rounded corners */
+    background-color: #ffe66b; /* Soft yellow background */
+    color: #333; /* Dark text color for contrast */
+    font-size: 16px; /* Adjust font size */
+    font-weight: bold; /* Make text bolder */
+    cursor: pointer; /* Pointer cursor for clickable items */
+    position: relative; /* Required for pseudo-element positioning */
+    outline: none; /* Remove default outline */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth background-color and text color transition */
+}
+
+#navCard button:hover {
+    background-color: #333; /* Change background color to orange on hover */
+    color: #ffe66b; /* Change text color to white on hover */
+}
+
+#navCard button:focus {
+    background-color: #333; /* Change background color to orange on focus */
+    color: #ffe66b; /* Change text color to white on focus */
+}
+
+.navBtnFlexbox {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.navBtnFlexbox button {
+  display: flex;
+}
+
+.navDescription {
+  margin-top: 10px;
+  padding: 10px;
+  white-space: nowrap; /* Ensures text does not wrap */
+  font-size: clamp(12px, 2vw, 16px); /* Adjust font size based on available space */
+  overflow: hidden; /* Optional: hides overflowing text */
+  text-overflow: ellipsis; /* Optional: adds ellipsis for overflow */
+}
+
+#markdownNav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  opacity: 1;
+  transform: translateY(10px);
+  gap: 0px;
+  margin-left: 30px;
+  width: 100%;
+}
+
+#markdownNav button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background-color: #ffe66b;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#markdownNav button:nth-child(1) {
+  margin-left: 0;
+}
+
+#markdownNav button:nth-child(2) {
+  margin-left: -15px;
+}
+
+#markdownNav button:nth-child(3) {
+  margin-left: -15px;
+}
+
+#markdownNav button:hover {
+  background-color: #333;
+  color: #ffe66b;
+}

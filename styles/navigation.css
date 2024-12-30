@@ -1,0 +1,193 @@
+
+
+#mapNavigationContainer {
+    z-index: 4;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #0e0d0c;
+    left: 0;
+    justify-content: flex-start;
+    align-items: flex-start;
+    top: 0;
+    overflow: auto;
+    transition:
+        width 0.5s ease-in-out 0.2s, /* Delay width transition to allow opacity transition first */
+        height 0.5s ease-in-out,
+        transform 0.5s ease-in-out;}
+
+#navTitle {
+    margin-top: 20px;
+    color: white;
+    margin-left: 20px;
+    font-size: 2em;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.navItem {
+    margin-top: 10px;
+    margin-left: 20px;
+    color: rgb(255, 255, 136);
+    text-align: left;
+    display: flex;
+    font-size: 1em;
+    transition: opacity 0.1s ease-in-out, transform 0.3s ease-in-out, text-decoration-color 0.3s ease;
+    position: relative;
+}
+
+.navItem::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background-color: rgb(255, 255, 136);
+    transition: width 0.3s ease;
+}
+
+.navItem:hover {
+    opacity: 0.9;
+    cursor: pointer;
+
+    transform: translateX(5px);
+}
+
+.navItem:hover::after {
+    width: 100%;
+}
+
+.navItem:focus-visible {
+    outline: 2px solid rgb(255, 255, 136);
+    outline-offset: 3px;
+}
+
+.navSubItem {
+    color: rgb(240, 240, 203);
+    font-size: 1em;
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.1s ease-in-out;
+
+}
+
+.navSubItemTitle {
+    margin-top: 5px;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.1s ease-in-out;
+
+}
+
+.navSubItemTitle:hover {
+    text-decoration: underline;
+}
+
+.navSubItemList {
+    margin-left: 20px;
+    display: none;
+    flex-direction: column;
+    transition: opacity 0.1s ease-in-out;
+
+}
+
+.navSubItemEntry {
+    margin-top: 3px;
+    cursor: pointer;
+    color: rgb(180, 180, 136);
+    user-select: none;
+    transition: opacity 0.1s ease-in-out;
+
+}
+
+.navSubItemEntry:hover {
+    text-decoration: underline;
+    color: rgb(220, 220, 160);
+}
+
+/* Scrollbar styling for navigation */
+#mapNavigationContainer {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #0e0d0c;
+}
+
+#mapNavigationContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+#mapNavigationContainer::-webkit-scrollbar-track {
+    background: #0e0d0c;
+}
+
+#mapNavigationContainer::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+.navSubItemTitle {
+    margin-left: 30px;
+    margin-top: 5px;
+    cursor: pointer;
+    user-select: none;
+    color: rgb(200, 200, 136);
+}
+
+.navSubItemTitle:hover {
+    text-decoration: underline;
+}
+
+.navSubItemList {
+    margin-left: 50px;
+    display: none;
+    flex-direction: column;
+}
+
+.navSubItemEntry {
+    margin-top: 3px;
+    cursor: pointer;
+    color: rgb(180, 180, 136);
+    user-select: none;
+}
+
+.navSubItemEntry:hover {
+    text-decoration: underline;
+    color: rgb(220, 220, 160);
+}
+
+/* Style for upcoming episodes */
+.navSubItemEntry.upcoming {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.navSubItemEntry.upcoming:hover {
+    text-decoration: none;
+    color: rgb(180, 180, 136);
+}
+
+/* Ensure proper scrolling if content overflows */
+#mapNavigationContainer {
+    overflow-y: auto;
+}
+
+
+.desktopDisplayNone #navTitle,
+.desktopDisplayNone #navHeader,
+.desktopDisplayNone #itemSelectionContainer,
+.desktopDisplayNone .navItem,
+.desktopDisplayNone .navSubItem,
+.desktopDisplayNone .navSubItemTitle,
+.desktopDisplayNone .navSubItemEntry {
+    transform: translateX(-400px);
+    transition: transform 0.1s ease-in-out; /* Add delay to sync with width transition */
+}
+
+.desktopClosed #mapNavigationContainer {
+    overflow: hidden;
+}
+
+
+.desktopClosed #mapNavigationContainer {
+    overflow: hidden;
+}
+  

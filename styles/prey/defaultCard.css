@@ -1,0 +1,52 @@
+.card {
+    margin-top:0px;
+    color: #FFFFFF; /* Updated to a brighter white for enhanced contrast */
+    background-color: #0e0d0cbb;
+    padding: 10px;
+    margin-bottom:20px;
+    transition: transform 0.2s;
+    animation: slideUp 0.5s ease-out;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Slightly deeper shadow for more depth */
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card p {
+    color: #CCCCCC; /* Lighter grey for improved readability */
+}
+
+.card span {
+    margin-top:10px;
+    padding:10px;
+    margin-bottom:20px;
+    background-color: #2E2E2E; /* Slightly darker shade for the background */
+    border-radius: 15px;
+}
+
+.card {
+    width: 100%;
+    padding-top:30px;
+    padding-left:20px;
+    padding-bottom:20px;
+    padding-right:20px;
+}
+
+.card:hover, .profile-card:hover, .pollCard:hover {
+    transform: scale(1.05);
+}
+
+.description-div {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.description {
+    display: flex;
+    margin-bottom:0px;
+    margin-top:5px;
+    border-radius:15px;
+    color: #CCCCCC; /* Lighter grey for improved readability */
+    font-size: 1em;
+    font-family: 'Arial', sans-serif;
+}

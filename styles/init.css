@@ -1,0 +1,26 @@
+
+* {
+    box-sizing: border-box; /* Apply border-box to all elements */
+}
+
+
+
+.results-container, .markdown-content {
+    padding-left: 20px;
+    padding-right: 20px;
+    transition: opacity 0.5s, display 0s 0.5s;
+    opacity: 1;
+}
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+h1, h2, h3 {
+    color: #ffe66b;
+    text-align: left;
+}

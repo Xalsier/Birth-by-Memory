@@ -1,0 +1,59 @@
+
+
+.scale-down {
+    transform: scale(0.6);
+}
+
+.displayNoneFunction {
+    opacity: 0;
+    cursor: none;
+    z-index: -100;
+}
+
+@media (max-width: 768px) {
+    #mapNavigationContainer {
+        width: 100%;
+    }
+
+    img {
+        height: 100vh;
+        width: auto;
+    }
+}
+
+/* Styling for the quote */
+.quote {
+    cursor: pointer;
+    color: rgb(255, 255, 202);
+}
+
+/* Tooltip styling */
+.sup-tooltip {
+    position: absolute;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 5px;
+    z-index: 1000;
+    display: none;
+    max-width: 300px;
+}
+
+.sup-link {
+    position: relative;
+}
+
+.sup-link:hover .sup-tooltip {
+    display: block;
+}
+
+.markdown-content {
+    background-color: #0e0d0cbb;
+    color: white;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0px 2px 4px rgba(71, 66, 66, 0.1);
+}
+
+.markdown-content strong{
+    color: rgb(255, 255, 136);
+}

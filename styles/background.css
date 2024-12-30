@@ -1,0 +1,103 @@
+body {
+    background-color: #191919;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    margin: 0;
+}
+
+#mapContainer {
+    display: flex;
+    height: 100%;
+    overflow-y: hidden;
+    z-index: 1;
+    overflow-x: visible;
+}
+
+#rasterMapPlaceholder {
+    transition: padding-left 0.5s ease-in-out, transform 1.5s ease-in-out;
+    position:absolute;
+    width: 100vw;
+    z-index: -11;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#rasterMapPlaceholder::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%);
+    z-index: 3;
+}
+
+.circle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+.wave, .graywave, .twowave, 
+.lockjaw1, .lockjaw2, .lockjaw3,
+#wave1, #wave2, #wave3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    z-index: 1; /* Default z-index */
+    animation: waveAnimation linear infinite;
+}
+
+#wave1 {
+    animation-duration: 3s;
+}
+
+#wave2 {
+    animation-duration: 7s;
+}
+
+#wave3 {
+    z-index: 2;
+    animation-duration: 5s;
+}
+
+.lockjaw1 {
+    fill: #310a24;
+    animation-duration: 3s;
+
+}
+
+.lockjaw2 {
+    fill: #441830;
+    animation-duration: 7s;
+ 
+}
+
+.lockjaw3 {
+    fill: #3c122b;
+    z-index: 2;
+    animation-duration: 5s;
+
+}
+@keyframes waveAnimation {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+main {
+    width: 900px;
+    display: flex;
+}
