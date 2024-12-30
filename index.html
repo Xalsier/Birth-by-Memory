@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=1000px, user-scalable=no">
+        <link rel="stylesheet" type="text/css" href="./styles/init.css">
+        <link rel="stylesheet" type="text/css" href="./styles/interface.css">
+        <link rel="stylesheet" type="text/css" href="./styles/menu.css">
+        <link rel="stylesheet" type="text/css" href="./styles/nav.css">
+        <link rel="stylesheet" type="text/css" href="./styles/navigation.css">
+        <link rel="stylesheet" type="text/css" href="./styles/style.css">
+        <link rel="stylesheet" type="text/css" href="./styles/style2.css">
+        <link rel="stylesheet" type="text/css" href="./styles/prey/defaultCard.css">
+        <link rel="stylesheet" type="text/css" href="./styles/prey/pollCard.css">
+        <link rel="stylesheet" type="text/css" href="./styles/prey/profCard.css">
+        <link rel="stylesheet" type="text/css" href="./styles/background.css">
+        <title>Birth by Memory</title>
+    </head>
+    <body>
+        <main id="mapContainer">
+            <div id="articleContainer" class="articleCon100">
+                <div id="articleWrapper" class="articleCon67">
+                    <div class="search-container">
+                        <div class="search1">
+                            <button id="profileButton" aria-label="User Profile"></button>
+                            <input type="text" id="searchInput" onkeypress="if(event.key === 'Enter') { searchArticles(); }">   
+                            <span id="profileNameIndicator" style="color: #ffe66b;"><strong></strong></span>
+                        </div>
+                        <div class="search2">
+                            <div class="card" id="navCard">
+                                <div class="navBtnFlexbox">
+                                    <button style="opacity:0.3;">First Chapter</button>
+                                    <button style="opacity:0.3;">Current Chapter</button>
+                                    <button onclick="loadMarkdown('pages/home.md')">Ecosystem</button>
+                                    <button style="opacity:0.3;">Primal Market</button>
+                                    <button id="switch-bg">Background</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="results-container" id="resultsContainer">
+                        <div id="gallery">
+                            <div id="galleryCard">
+                                <div id="navItemGallery" class="navItem navColor">⬤ Art Gallery</div>
+                                <div id="galleryCategories" class="navSubItem" style="display: none;"></div>
+                            </div>
+                            <div id="pagination"></div>
+                            <div id="image-grid" class="grid-container"></div>
+                            <div id="single-image-view"></div>
+                        </div>
+                    </div>
+                    <div class="hidden" id="markdownNav"></div>
+                    <div class="markdown-content hidden" id="markdownContent">
+                        
+                    </div> 
+                </div>  
+            </div>     
+</main>
+<div id="rasterMapPlaceholder">
+    <svg id="circle-container" xmlns="http://www.w3.org/2000/svg" viewBox="0 -35 100 100" preserveAspectRatio="xMidYMid slice">
+        <circle cx="50" cy="20" r="70" fill="#395a6e" />
+        <circle cx="50" cy="20" r="60" fill="#3c7d85" />
+        <circle cx="50" cy="20" r="50" fill="#3fa39d" />
+        <circle cx="50" cy="20" r="40" fill="#48cfa4" />
+        <circle cx="50" cy="20" r="30" fill="#67fff3" />
+        <circle cx="50" cy="20" r="20" fill="#51d8ea" />
+        <circle cx="50" cy="-10" r="5" fill="white" />
+        <circle cx="48" cy="-7" r="1" fill="#f9f3eb90" />
+        <circle cx="52" cy="-11" r="2" fill="#f9f3eb90" />
+        <circle cx="25" cy="-16" r="1" fill="white" />
+        <circle cx="10" cy="5" r="1" fill="white" />
+        <circle cx="80" cy="-10" r="1" fill="white" />
+      </svg>
+    
+      <!-- Wave SVGs (No classes anymore) -->
+      <svg id="wave1" xmlns="http://www.w3.org/2000/svg" viewBox="0 -95 1200 400" preserveAspectRatio="none">
+        <path id="wave1Path" d="M 0 100 Q 150 50 300 100 T 600 100 T 900 100 T 1200 100 L 1200 400 L 0 400 Z"></path>
+      </svg>
+    
+      <svg id="wave2" xmlns="http://www.w3.org/2000/svg" viewBox="0 -85 1200 400" preserveAspectRatio="none">
+        <path id="wave2Path" d="M 0 100 Q 150 50 300 100 T 600 100 T 900 100 T 1200 100 L 1200 400 L 0 400 Z"></path>
+      </svg>
+    
+      <svg id="wave3" xmlns="http://www.w3.org/2000/svg" viewBox="0 -100 1200 400" preserveAspectRatio="none">
+        <path id="wave3Path" d="M 0 100 Q 150 50 300 100 T 600 100 T 900 100 T 1200 100 L 1200 400 L 0 400 Z"></path>
+      </svg>
+      
+</div>   
+        <footer>
+            <script src="./javascript/interface/switchBG.js" defer></script>
+            <script src="./javascript/interface/navi.js" defer></script>
+            <script src="./javascript/syntax/charProf.js" defer></script>
+            <script src="./javascript/config.js" defer></script>
+            <script src="./javascript/interface/script.js" defer></script>
+            <script src="./javascript/syntax/refTemp.js" defer></script>
+            <script src="./javascript/interface/util.js" defer></script>
+        </footer>              
+    </body>
+</html>
