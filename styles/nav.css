@@ -97,22 +97,6 @@
     transition: opacity 1s ease, transform 1s ease; /* Smooth transition */
   }
   
-  /* Animation for pop-in effect */
-  @keyframes popIn {
-    0% {
-      opacity: 0;
-      transform: scale(0.8); /* Start smaller */
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.1); /* Slightly bigger for a pop effect */
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1); /* Set back to normal size */
-    }
-  }
-  
   /* Class that will be added to trigger the animation */
   #navCard.open {
     display: block; /* Make the element visible */
@@ -136,6 +120,16 @@
 #navCard button:hover {
     background-color: #333; /* Change background color to orange on hover */
     color: #ffe66b; /* Change text color to white on hover */
+}
+
+#navCard button a {
+  color: #333;
+  text-decoration: none;
+}
+
+#navCard button a:hover {
+  color: #ffe66b;
+  text-decoration: none;
 }
 
 #navCard button:focus {

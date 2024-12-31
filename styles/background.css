@@ -88,14 +88,6 @@ body {
     animation-duration: 5s;
 
 }
-@keyframes waveAnimation {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
-}
 
 main {
     width: 900px;
