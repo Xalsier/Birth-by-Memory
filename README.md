@@ -1,3 +1,3 @@
 # Birth-by-Memory
 
-Repo for Fixing bugs on the Birth by Memory website.
+Repository for fixing bugs on the Birth by Memory website.
