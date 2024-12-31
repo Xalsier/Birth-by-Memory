@@ -65,7 +65,6 @@ const karmaRegex = /{{KarmaRec\|([^}]+)}}/;
 const charRegex = /{{charProf\|([^}]+)}}/;
 const sampleSize = 5;
 resultsContainer.innerHTML = '';
-// Helper function to toggle display
 function toggleNavDisplay(element) {
     if (element.style.display === 'none' || element.style.display === '') {
         element.style.display = 'block';

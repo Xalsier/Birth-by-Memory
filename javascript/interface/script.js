@@ -26,12 +26,8 @@ async function searchArticles(dice = false) {
 async function displayResults(results, random = false) {
     resultsContainer.style.display = 'flex';
     resultsContainer.innerHTML = '';
-
-    // Filter out hidden articles
     const hiddenArticles = results.filter(article => article.hidden);
     const visibleResults = results.filter(article => !article.hidden);
-
-    // If there are hidden articles, display a message
     if (hiddenArticles.length > 0) {
         const hiddenMessageCard = document.createElement('div');
         hiddenMessageCard.className = 'card';
@@ -52,13 +48,11 @@ async function displayResults(results, random = false) {
         return;
     }
 
-    // Loop through the visible results and display each one
     visibleResults.forEach(async article => {
         let holder;
         const keys = Object.keys(article);
         const hasOnlyTitleAndImg = keys.length === keys.filter(key => ['title', 'img', 'hideTitle'].includes(key)).length;
         const hasRequiredFields = ['img', 'phenotypes', 'palette', 'title', 'description'].every(key => key in article) && !article.hideTitle;
-
         if (hasOnlyTitleAndImg && article.img) {
             holder = document.createElement('div');
             holder.className = 'card';
@@ -80,18 +74,6 @@ async function displayResults(results, random = false) {
             if (article.path) {
                 holder.onclick = () => loadMarkdown(article.path);
                 holder.style.cursor = 'pointer';
-            }
-            if (article.metaCard) {
-                const metaSpan = document.createElement('span');
-                metaSpan.textContent = 'DISCORD';
-                metaSpan.className = 'metaCard';
-                holder.appendChild(metaSpan);
-            }
-            if (article.ama) {
-                const amaSpan = document.createElement('span');
-                amaSpan.textContent = 'FAQ';
-                amaSpan.className = 'amaCard';
-                holder.appendChild(amaSpan);
             }
             if (!article.hideTitle && article.title) {
                 const title = document.createElement('span');
@@ -119,111 +101,107 @@ async function displayResults(results, random = false) {
     resultsContainer.classList.remove('hidden');
 }
 
-
 async function loadMarkdown(path) {
     const markdown = await fetchMarkdown(path);
-
+  
     const markdownHeadersRegex = /^(#|##)\s(.+)/gm;
     const htmlHeadersRegex = /<(h1|h2)(.*?)>(.+?)<\/\1>/gm;
-    const tabs = [];
-
-    let match;
-
-    // Find the first h1 or # header as the main tab
-    const mainHeader = markdown.match(/^(#\s.+)|(<h1.*?>.+?<\/h1>)/m);
+  
+    const headers = [];
+  
     let mainHeaderTitle = "Main";
     let mainHeaderIndex = 0;
-
-    if (mainHeader) {
-        if (mainHeader[1]) { // Markdown header
-            mainHeaderTitle = mainHeader[1].replace(/^#\s/, '').trim();
-            mainHeaderIndex = mainHeader.index;
-        } else if (mainHeader[2]) { // HTML header
-            const htmlMatch = mainHeader[2].match(/<h1.*?>(.+?)<\/h1>/);
-            mainHeaderTitle = htmlMatch ? htmlMatch[1].trim() : "Main";
-            mainHeaderIndex = mainHeader.index;
+  
+    const mainHeaderMatch = markdown.match(/^(#\s.+)|(<h1.*?>.+?<\/h1>)/m);
+    if (mainHeaderMatch) {
+      if (mainHeaderMatch[1]) {
+        mainHeaderTitle = mainHeaderMatch[1].replace(/^#\s/, "").trim();
+      } else if (mainHeaderMatch[2]) {
+        const htmlMatch = mainHeaderMatch[2].match(/<h1.*?>(.+?)<\/h1>/);
+        if (htmlMatch) {
+          mainHeaderTitle = htmlMatch[1].trim();
         }
+      }
     }
-
-    // Add the main tab with all content up to the first h2 or ## header
-    const firstH2Match = markdown.match(/^(##\s.+)|(<h2.*?>.+?<\/h2>)/m);
-    const mainContentEndIndex = firstH2Match ? firstH2Match.index : markdown.length;
-    tabs.push({ title: mainHeaderTitle, index: 0, content: markdown.slice(0, mainContentEndIndex).trim() });
-
-    // Handle all h2 or ## headers as subsequent tabs
-    while ((match = markdownHeadersRegex.exec(markdown)) !== null) {
-        if (match[1] === '##') {
-            tabs.push({ title: match[2].trim(), index: match.index, content: markdown.slice(match.index).trim() });
-        }
-    }
-
-    while ((match = htmlHeadersRegex.exec(markdown)) !== null) {
-        if (match[1] === 'h2') {
-            const startIndex = match.index;
-            const endIndex = markdownHeadersRegex.lastIndex || markdown.length;
-            tabs.push({ title: match[3].trim(), index: startIndex, content: markdown.slice(startIndex, endIndex).trim() });
-        }
-    }
-
-    // Ensure tabs are sorted by order of appearance
-    tabs.sort((a, b) => a.index - b.index);
-
-    markdownNav.classList.remove('hidden');
-    markdownNav.style.display = 'flex';
-    markdownNav.innerHTML = tabs.map((tab, index) => `
-        <button id="tabButton${index}">${tab.title}</button>
-    `).join('');
-
-    markdownContent.innerHTML = renderMarkdown(tabs[0].content);
-
-    tabs.forEach((tab, index) => {
-        document.getElementById(`tabButton${index}`).addEventListener('click', () => {
-            markdownContent.innerHTML = renderMarkdown(tab.content);
-        });
+  
+    headers.push({
+      title: mainHeaderTitle,
+      index: 0,
     });
-
+    let mdMatch;
+    while ((mdMatch = markdownHeadersRegex.exec(markdown)) !== null) {
+      const level = mdMatch[1];
+      const titleText = mdMatch[2].trim();
+      if (level === "##") {
+        headers.push({
+          title: titleText,
+          index: mdMatch.index,
+        });
+      }
+    }
+  
+    let htmlMatch;
+    while ((htmlMatch = htmlHeadersRegex.exec(markdown)) !== null) {
+      const level = htmlMatch[1];
+      const titleText = htmlMatch[3].trim();
+      if (level === "h2") {
+        headers.push({
+          title: titleText,
+          index: htmlMatch.index,
+        });
+      }
+    }
+    headers.sort((a, b) => a.index - b.index);
+    const tabs = [];
+    for (let i = 0; i < headers.length; i++) {
+      const currentHeader = headers[i];
+      const nextHeader = headers[i + 1];
+      const start = currentHeader.index;
+      const end = nextHeader ? nextHeader.index : markdown.length;
+  
+      const content = markdown.slice(start, end).trim();
+      tabs.push({
+        title: currentHeader.title,
+        index: start,
+        content,
+      });
+    }
+  
+    markdownNav.classList.remove("hidden");
+    markdownNav.style.display = "flex";
+    markdownNav.innerHTML = tabs
+      .map((tab, index) => `<button id="tabButton${index}">${tab.title}</button>`)
+      .join("");
+  
+    markdownContent.innerHTML = renderMarkdown(tabs[0].content);
+  
+    tabs.forEach((tab, index) => {
+      document.getElementById(`tabButton${index}`).addEventListener("click", () => {
+        markdownContent.innerHTML = renderMarkdown(tab.content);
+      });
+    });
+  
     await checkForTemplate();
     checkForCharacterProfile();
     bindLinkClicks();
-
     Travel('prey');
-}
+  }
+  
 
-
-
-
-
-
-
-// Basic Markdown renderer
 function renderMarkdown(markdown) {
-    // Allow HTML in markdown content
     let html = markdown;
-
-    // Replace headings
     html = html.replace(/^###### (.*)$/gm, '<h6>$1</h6>');
     html = html.replace(/^##### (.*)$/gm, '<h5>$1</h5>');
     html = html.replace(/^#### (.*)$/gm, '<h4>$1</h4>');
     html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>');
     html = html.replace(/^## (.*)$/gm, '<h2>$1</h2>');
     html = html.replace(/^# (.*)$/gm, '<h1>$1</h1>');
-
-    // Replace bold (**text**)
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-    // Replace italics (*text*)
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-    // Replace horizontal rule (----)
     html = html.replace(/^----$/gm, '<hr>');
-
-    // Convert line breaks to <br> tags
     html = html.replace(/\n/g, '<br>');
-
-    // Wrap paragraphs
     html = html.replace(/(<br>){2,}/g, '</p><p>');
     html = '<p>' + html + '</p>';
-
     return html.trim();
 }
 
@@ -237,11 +215,7 @@ async function checkForTemplate() {
             found = true;
         }
     }
-    if (found) {
-        console.log('Template Found');
-    } else {
-        console.log('Template Not Found');
-    }
+    console.log(found ? 'Template Found' : 'Template Not Found');
 }
 
 function checkForLinks(renderedMarkdown) {
