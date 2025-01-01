@@ -57,30 +57,3 @@
 .markdown-content strong{
     color: rgb(255, 255, 136);
 }
-
-.markdown-content img {
-    width: 200px; /* Explicit width */
-    height: 200px; /* Explicit height */
-    display: block;
-    border-radius: 25px;
-
-    /* SVG as the background image */
-    background-image: url('../alt.svg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-
-    /* Force content to use the empty.png */
-    content: url('../empty.png');
-}
-
-
-
-.markdown-content img:not([src]) {
-    background-image: url('../alt.svg'); /* Keeps the placeholder when no src */
-}
-
-/* The placeholder shows if the image hasn't loaded or has no src */
-.markdown-content img[src=""] {
-    background-image: url('../alt.svg');
-}
