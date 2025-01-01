@@ -3,8 +3,6 @@
     box-sizing: border-box; /* Apply border-box to all elements */
 }
 
-
-
 .results-container, .markdown-content {
     padding-left: 20px;
     padding-right: 20px;

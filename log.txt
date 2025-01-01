@@ -1,0 +1,10 @@
+
+
++ 16 : 31 Dec 2024 - Xalsier
+- Solved that one issue where the SVG will show the wrong colors for a split second 
+on slow internet. The solution was just baking the fill colors and data into the svg.
+- Error Sandbox path if src directions are wrong. Using this to test the fallback.
+- Added a fallback image for slow internet by putting the fallback svg as a background-image, 
+and putting a transparent empty.png through css 'content' to get rid of the image border.
+- The flickering of the waves was caused by the page resizing, so I removed the resizing 
+entirely and forced a 1000px width.

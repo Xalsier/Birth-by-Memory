@@ -18,7 +18,7 @@ body {
 #rasterMapPlaceholder {
     transition: padding-left 0.5s ease-in-out, transform 1.5s ease-in-out;
     position:absolute;
-    width: 100vw;
+    width: 1000px;
     z-index: -11;
     height: 100vh;
     overflow: hidden;
@@ -40,8 +40,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 1000px;
+    height: 1000px;
     z-index: 1;
 }
 
@@ -51,11 +51,14 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 200%;
+    width: 2000px;
     height: 100%;
-    z-index: 1; /* Default z-index */
+    transform: translateY(-1000px);
+    z-index: 1;
     animation: waveAnimation linear infinite;
+    will-change: transform;
 }
+
 
 #wave1 {
     animation-duration: 3s;
@@ -70,23 +73,17 @@ body {
     animation-duration: 5s;
 }
 
-.lockjaw1 {
-    fill: #310a24;
-    animation-duration: 3s;
-
+.default-theme circle,
+.default-theme path {
+    fill: attr(data-default-color);
 }
 
-.lockjaw2 {
-    fill: #441830;
-    animation-duration: 7s;
- 
+.alternate-theme circle {
+    fill: attr(data-alternate-color);
 }
 
-.lockjaw3 {
-    fill: #3c122b;
-    z-index: 2;
-    animation-duration: 5s;
-
+.alternate-theme path {
+    fill: attr(data-alternate-color);
 }
 
 main {

@@ -21,59 +21,6 @@ function Travel(param) {
 function transitionToHome() {
     Travel('forest');
 }
-async function openProfile() {
-    // Access isProfileOpen from dataStore.booleans
-    if (dataStore.booleans.isProfileOpen) {
-        resultsContainer.innerHTML = '';
-    } else {
-        Travel('forest');
-        resultsContainer.innerHTML = '';
-        const userProfileCard = createCharacterProfile(dataStore.userProfile);
-        resultsContainer.appendChild(userProfileCard);
-    }
-
-    // Toggle the value of isProfileOpen in dataStore
-    dataStore.booleans.isProfileOpen = !dataStore.booleans.isProfileOpen;
-}
-
-
-async function refreshUserProfileCard() {
-    resultsContainer.innerHTML = '';
-    const userProfileCard = createCharacterProfile(dataStore.userProfile);
-    resultsContainer.appendChild(userProfileCard);
-    const profileCustomizationCard = await createProfileCustomizationCard();
-    resultsContainer.appendChild(profileCustomizationCard);
-    const maxNameLength = 10;
-    const profileName = document.getElementById('profileNameIndicator');
-    const truncatedName = dataStore.userProfile.title.length > maxNameLength 
-        ? dataStore.userProfile.title.slice(0, maxNameLength) + '...' 
-        : dataStore.userProfile.title;
-    profileName.innerHTML = truncatedName;
-    const profileButton = document.getElementById('profileButton');
-    profileButton.style.backgroundColor = dataStore.userProfile.color;
-}
-
-async function randomizeUserProfile() {
-    const randomName = `${namePrefixes[Math.floor(Math.random() * namePrefixes.length)]} ${nameSuffixes[Math.floor(Math.random() * nameSuffixes.length)]}`;
-    const randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
-    dataStore.userProfile.title = randomName;
-    dataStore.userProfile.color = randomColor;
-    delete dataStore.userProfile.img;
-    await refreshUserProfileCard();
-    const profileButton = document.getElementById('profileButton');
-    profileButton.style.backgroundColor = randomColor;
-}
-
-function generatePastelColors(count) {
-    let colors = [];
-    for (let i = 0; i < count; i++) {
-        const hue = Math.floor(Math.random() * 360);
-        const saturation = 60 + Math.floor(Math.random() * 30);
-        const lightness = 75 + Math.floor(Math.random() * 15);
-        colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
-    }
-    return colors;
-}
 
 function createPollCard(article) {
     const card = document.createElement('div');
@@ -115,56 +62,4 @@ function createPollCard(article) {
     votesSummary.textContent = article.pollData.map(([name, votes]) => `${name}, ${votes} vote${votes !== 1 ? 's' : ''}`).join('. ') + `. Total: ${totalVotes}.`;
     container.appendChild(votesSummary);
     return card;
-}
-
-const pastelColors = generatePastelColors(256);
-
-async function generateRandomUserProfile() {
-    const randomName = `${namePrefixes[Math.floor(Math.random() * namePrefixes.length)]} ${nameSuffixes[Math.floor(Math.random() * nameSuffixes.length)]}`;
-    const randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
-
-    // Function to darken or lighten the color
-    function adjustColor(color, amount) {
-        let usePound = false;
-
-        if (color[0] === "#") {
-            color = color.slice(1);
-            usePound = true;
-        }
-
-        const num = parseInt(color, 16);
-        let r = (num >> 16) + amount;
-        let g = ((num >> 8) & 0x00FF) + amount;
-        let b = (num & 0x0000FF) + amount;
-
-        r = Math.min(255, Math.max(0, r));
-        g = Math.min(255, Math.max(0, g));
-        b = Math.min(255, Math.max(0, b));
-
-        return (usePound ? "#" : "") + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-    }
-
-    const darkerColor = adjustColor(randomColor, -30); // Darker pastel for the button
-    const lighterColor = adjustColor(randomColor, 50); // Lighter pastel for the name
-
-    dataStore.userProfile = {
-        title: randomName,
-        color: randomColor,
-        description: dataStore.userProfile.description
-    };
-
-    const profileButton = document.getElementsByClassName('profileButton')[0];
-    if (profileButton) {
-        profileButton.style.backgroundColor = darkerColor;
-    }
-
-    const maxNameLength = 15;
-    const profileName = document.getElementById('profileNameIndicator');
-    if (profileName) {
-        profileName.style.setProperty('color', lighterColor, 'important');
-        const truncatedName = dataStore.userProfile.title.length > maxNameLength 
-            ? dataStore.userProfile.title.slice(0, maxNameLength) + '...' 
-            : dataStore.userProfile.title;
-        profileName.innerHTML = truncatedName;
-    }
 }

@@ -1,10 +1,26 @@
 async function fetchMarkdown(path) {
-    const response = await fetch(path);
-    if (!response.ok) {
-        throw new Error('Network response was not ok: ' + response.statusText);
+    try {
+        const response = await fetch(path);
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return await response.text();
+    } catch (error) {
+        console.error('Error fetching markdown:', error.message);
+        // Fallback to debug/empty.md
+        try {
+            const fallbackResponse = await fetch('debug/empty.md');
+            if (!fallbackResponse.ok) {
+                throw new Error('Network response was not ok for fallback: ' + fallbackResponse.statusText);
+            }
+            return await fallbackResponse.text();
+        } catch (fallbackError) {
+            console.error('Error fetching fallback markdown:', fallbackError.message);
+            throw fallbackError; // Rethrow if fallback also fails
+        }
     }
-    return await response.text();
 }
+
 
 async function searchArticles(dice = false) {
     const query = document.getElementById('searchInput').value.toLowerCase().trim();
@@ -181,9 +197,6 @@ async function loadMarkdown(path) {
       });
     });
   
-    await checkForTemplate();
-    checkForCharacterProfile();
-    bindLinkClicks();
     Travel('prey');
   }
   
@@ -205,60 +218,6 @@ function renderMarkdown(markdown) {
     return html.trim();
 }
 
-async function checkForTemplate() {
-    console.log('Checking for Template...');
-    const paragraphs = markdownContent.querySelectorAll('p');
-    let found = false;
-    for (const paragraph of paragraphs) {
-        if (paragraph.textContent.includes('{{KarmaRec|')) {
-            await insertKarmaRecord(paragraph.textContent);
-            found = true;
-        }
-    }
-    console.log(found ? 'Template Found' : 'Template Not Found');
-}
-
-function checkForLinks(renderedMarkdown) {
-    let detectedLinks = 0;
-    let convertedLinks = 0;
-    renderedMarkdown = renderedMarkdown.replace(linkPattern, (match, path1, text1, path2, text2) => {
-        let path, text;
-        if (path1 && text1) {
-            path = path1.trim();
-            text = text1.trim();
-        } else if (path2 && text2) {
-            path = path2.trim();
-            text = text2.trim();
-        }
-        detectedLinks++;
-        if (articleExists(path)) {
-            convertedLinks++;
-            return `<a href="#" data-path="${path}">${text}</a>`;
-        } else {
-            return `<a href="#" style="color: #ff6b6b; cursor: pointer;">${text}</a>`;
-        }
-    });
-    console.log(`Detected ${detectedLinks} links, ${convertedLinks} converted to article links successfully`);
-    return renderedMarkdown;
-}
-
 function articleExists(path) {
     return dataStore.articles.some(article => article.path === path);
-}
-
-function bindLinkClicks() {
-    const links = document.querySelectorAll('.markdown-content a[data-path]');
-    links.forEach(link => {
-        const handleLinkClick = async (event) => {
-            event.preventDefault();
-            try {
-                const path = link.getAttribute('data-path');
-                await loadMarkdown(path);
-            } catch (error) {
-                console.error('Error handling markdown link:', error);
-            }
-        };
-        link.removeEventListener('click', handleLinkClick);
-        link.addEventListener('click', handleLinkClick);
-    });
 }
