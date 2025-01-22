@@ -16,3 +16,9 @@
 |  !           | **Timeline**                         | Timeline for story events.                  |
 |  !           | **Gallery**                         | Return of Gallery Indexing.                  |
 |  !           | **Image Fallback**                         | Placeholder Image in case of slow internet.                |
+
+## Working Features
+
+| **Introduced** | **Feature**                          | **Description**                               |
+|:------------:|:------------------------------------:|:---------------------------------------------:|
+|  22 Jan 2025         | **Credits with a Profile**                     | No longer need to tab to notes to find credit.       |
