@@ -110,7 +110,3 @@ a:hover {
     transition: transform 0.3s ease;
     border-radius: 25px;
 }
-
-.mn_df:hover .zx_kf {
-    transform: scale(1.3);
-}
