@@ -1,205 +1,164 @@
+const huntCache = [];
+let titleTracker = [];
+
+function getBestTitle(titles) {
+    const titleCounts = {};
+    titles.forEach(([count, title]) => {
+        titleCounts[count] = titleCounts[count] || [];
+        titleCounts[count].push(title);
+    });
+    const highestCount = Math.max(...Object.keys(titleCounts).map(Number));
+    return titleCounts[highestCount][0];
+}
+
 async function fetchMarkdown(path) {
     try {
         const response = await fetch(path);
-        if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
+        if (!response.ok) throw new Error('Network error: ' + response.statusText);
         return await response.text();
     } catch (error) {
-        console.error('Error fetching markdown:', error.message);
-        // Fallback to debug/empty.md
+        console.error('Fetch error:', error.message);
         try {
-            const fallbackResponse = await fetch('debug/empty.md');
-            if (!fallbackResponse.ok) {
-                throw new Error('Network response was not ok for fallback: ' + fallbackResponse.statusText);
-            }
-            return await fallbackResponse.text();
+            const fallback = await fetch('debug/empty.md');
+            return fallback.ok ? fallback.text() : Promise.reject();
         } catch (fallbackError) {
-            console.error('Error fetching fallback markdown:', fallbackError.message);
-            throw fallbackError; // Rethrow if fallback also fails
+            console.error('Fallback error:', fallbackError.message);
+            throw fallbackError;
         }
     }
-}
-
-
-async function searchArticles(dice = false) {
-    const query = document.getElementById('searchInput').value.toLowerCase().trim();
-    let results;
-    console.log(results);
-    results = query.includes("faq") || query.includes("ama")
-        ? dataStore.articles.filter(article => article.ama === true)
-        : dataStore.articles.filter(article =>
-            ["title", "description", "img"].some(key =>
-                article[key] && article[key].toLowerCase().includes(query)
-            )
-        );
-    markdownContent.classList.add('hidden');
-    markdownContent.style.display = 'none';
-    await displayResults(results, dice);
-    resultsContainer.classList.remove('hidden');
-}
-
-async function displayResults(results, random = false) {
-    resultsContainer.style.display = 'flex';
-    resultsContainer.innerHTML = '';
-    const hiddenArticles = results.filter(article => article.hidden);
-    const visibleResults = results.filter(article => !article.hidden);
-    if (hiddenArticles.length > 0) {
-        const hiddenMessageCard = document.createElement('div');
-        hiddenMessageCard.className = 'card';
-        hiddenMessageCard.innerHTML = `<p>${hiddenArticles.length} resources have been hidden as they are non-canonical.</p>`;
-        resultsContainer.appendChild(hiddenMessageCard);
-    }
-
-    if (markdownContent.style.display === 'none') {
-        markdownNav.style.display = 'none';
-    }
-
-    if (visibleResults.length === 0) {
-        console.log(results);
-        resultsContainer.innerHTML += `
-            <div class="card">
-                <p>No resources could be found.</p>
-            </div>`;
-        return;
-    }
-
-    visibleResults.forEach(async article => {
-        let holder;
-        const keys = Object.keys(article);
-        const hasOnlyTitleAndImg = keys.length === keys.filter(key => ['title', 'img', 'hideTitle'].includes(key)).length;
-        const hasRequiredFields = ['img', 'phenotypes', 'palette', 'title', 'description'].every(key => key in article) && !article.hideTitle;
-        if (hasOnlyTitleAndImg && article.img) {
-            holder = document.createElement('div');
-            holder.className = 'card';
-            const image = document.createElement('img');
-            image.src = `./untitled08325/${article.img}`;
-            image.alt = 'Image for ' + article.title;
-            image.style.width = '100%';
-            holder.appendChild(image);
-        } else if (hasRequiredFields) {
-            holder = createCharacterProfile(article);
-            holder.onclick = () => loadMarkdown(article.path);
-            holder.style.cursor = 'pointer';
-        } else if (article.automation === 'pollCard') {
-            holder = createPollCard(article);
-            holder.style.cursor = 'pointer';
-        } else {
-            holder = document.createElement('div');
-            holder.className = 'card';
-            if (article.path) {
-                holder.onclick = () => loadMarkdown(article.path);
-                holder.style.cursor = 'pointer';
-            }
-            if (!article.hideTitle && article.title) {
-                const title = document.createElement('span');
-                title.textContent = article.title;
-                holder.appendChild(title);
-            }
-            if (article.automation === 'directoryList') {
-                const description = await listUnavailableArticles(); // Ensure this is awaited
-                article.description = description; // Update the description with the dynamic content
-            }
-            if (article.description) {
-                const description = document.createElement('p');
-                description.innerHTML = article.description; // Use innerHTML to include HTML content
-                holder.appendChild(description);
-            }
-            if (article.htmlContent) {
-                const htmlContent = document.createElement('div');
-                htmlContent.innerHTML = article.htmlContent;
-                holder.appendChild(htmlContent);
-            }
-        }
-        resultsContainer.appendChild(holder);
-    });
-
-    resultsContainer.classList.remove('hidden');
 }
 
 async function loadMarkdown(path) {
     const markdown = await fetchMarkdown(path);
-  
+
+    // Parse the HTML using DOMParser
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(markdown, "text/html");
+    const anchorTags = doc.querySelectorAll("a[onclick^='loadMarkdown']");
+
+    const discoveredLinks = [];
+
+    anchorTags.forEach((anchor) => {
+        const onclick = anchor.getAttribute("onclick");
+        const pathMatch = onclick.match(/loadMarkdown\('([^']+)'\)/);
+        if (!pathMatch) return;
+
+        const link = {
+            path: pathMatch[1],
+            img: anchor.getAttribute("dataimg") || null,
+            description: anchor.getAttribute("datadescription") || null,
+            class: anchor.getAttribute("dataclass") || null,
+            title: anchor.textContent.trim(),
+        };
+
+        discoveredLinks.push(link);
+    });
+
+    // Batch update huntCache with discovered links
+    discoveredLinks.forEach(link => {
+        const existingArticle = huntCache.find(article => article.path === link.path);
+        if (!existingArticle) {
+            huntCache.push({
+                title: link.title,
+                description: link.description || "No description available",
+                path: link.path,
+                img: link.img,
+                class: link.class
+            });
+        } else {
+            // Update existing article if new data is available
+            if (link.description) existingArticle.description = link.description;
+            if (link.img) existingArticle.img = link.img;
+            if (link.class) existingArticle.class = link.class;
+        }
+    });
+
+    console.log("Updated huntCache:", huntCache);
+
+    // Current article handling
+    const titlesForPath = titleTracker.filter(([,,p]) => p === path);
+    const bestTitle = titlesForPath.length ? getBestTitle(titlesForPath) : "Untitled";
+
+    if (!huntCache.some(a => a.path === path)) {
+        huntCache.push({
+            title: bestTitle,
+            description: "No description available",
+            path: path,
+            img: null,
+            class: null
+        });
+    }
+
+    // Render the markdown content
     const markdownHeadersRegex = /^(#|##)\s(.+)/gm;
     const htmlHeadersRegex = /<(h1|h2)(.*?)>(.+?)<\/\1>/gm;
-  
     const headers = [];
-  
     let mainHeaderTitle = "Main";
     let mainHeaderIndex = 0;
-  
     const mainHeaderMatch = markdown.match(/^(#\s.+)|(<h1.*?>.+?<\/h1>)/m);
     if (mainHeaderMatch) {
-      if (mainHeaderMatch[1]) {
-        mainHeaderTitle = mainHeaderMatch[1].replace(/^#\s/, "").trim();
-      } else if (mainHeaderMatch[2]) {
-        const htmlMatch = mainHeaderMatch[2].match(/<h1.*?>(.+?)<\/h1>/);
-        if (htmlMatch) {
-          mainHeaderTitle = htmlMatch[1].trim();
+        if (mainHeaderMatch[1]) {
+            mainHeaderTitle = mainHeaderMatch[1].replace(/^#\s/, "").trim();
+        } else if (mainHeaderMatch[2]) {
+            const htmlMatch = mainHeaderMatch[2].match(/<h1.*?>(.+?)<\/h1>/);
+            if (htmlMatch) {
+                mainHeaderTitle = htmlMatch[1].trim();
+            }
         }
-      }
     }
-  
     headers.push({
-      title: mainHeaderTitle,
-      index: 0,
+        title: mainHeaderTitle,
+        index: 0,
     });
     let mdMatch;
     while ((mdMatch = markdownHeadersRegex.exec(markdown)) !== null) {
-      const level = mdMatch[1];
-      const titleText = mdMatch[2].trim();
-      if (level === "##") {
-        headers.push({
-          title: titleText,
-          index: mdMatch.index,
-        });
-      }
+        const level = mdMatch[1];
+        const titleText = mdMatch[2].trim();
+        if (level === "##") {
+            headers.push({
+                title: titleText,
+                index: mdMatch.index,
+            });
+        }
     }
-  
     let htmlMatch;
     while ((htmlMatch = htmlHeadersRegex.exec(markdown)) !== null) {
-      const level = htmlMatch[1];
-      const titleText = htmlMatch[3].trim();
-      if (level === "h2") {
-        headers.push({
-          title: titleText,
-          index: htmlMatch.index,
-        });
-      }
+        const level = htmlMatch[1];
+        const titleText = htmlMatch[3].trim();
+        if (level === "h2") {
+            headers.push({
+                title: titleText,
+                index: htmlMatch.index,
+            });
+        }
     }
     headers.sort((a, b) => a.index - b.index);
     const tabs = [];
     for (let i = 0; i < headers.length; i++) {
-      const currentHeader = headers[i];
-      const nextHeader = headers[i + 1];
-      const start = currentHeader.index;
-      const end = nextHeader ? nextHeader.index : markdown.length;
-  
-      const content = markdown.slice(start, end).trim();
-      tabs.push({
-        title: currentHeader.title,
-        index: start,
-        content,
-      });
+        const currentHeader = headers[i];
+        const nextHeader = headers[i + 1];
+        const start = currentHeader.index;
+        const end = nextHeader ? nextHeader.index : markdown.length;
+        const content = markdown.slice(start, end).trim();
+        tabs.push({
+            title: currentHeader.title,
+            index: start,
+            content,
+        });
     }
-  
     markdownNav.classList.remove("hidden");
     markdownNav.style.display = "flex";
     markdownNav.innerHTML = tabs
-      .map((tab, index) => `<button id="tabButton${index}">${tab.title}</button>`)
-      .join("");
-  
+        .map((tab, index) => `<button id="tabButton${index}">${tab.title}</button>`)
+        .join("");
     markdownContent.innerHTML = renderMarkdown(tabs[0].content);
-  
     tabs.forEach((tab, index) => {
-      document.getElementById(`tabButton${index}`).addEventListener("click", () => {
-        markdownContent.innerHTML = renderMarkdown(tab.content);
-      });
+        document.getElementById(`tabButton${index}`).addEventListener("click", () => {
+            markdownContent.innerHTML = renderMarkdown(tab.content);
+        });
     });
-  
     Travel('prey');
-  }
-  
+}
 
 function renderMarkdown(markdown) {
     let html = markdown;
@@ -218,6 +177,53 @@ function renderMarkdown(markdown) {
     return html.trim();
 }
 
+function displayResults(results) {
+    resultsContainer.style.display = 'flex';
+    resultsContainer.innerHTML = '';
+    const validResults = results.filter(article => article?.title?.trim() && article?.path?.trim());
+    if (markdownContent.style.display === 'none') {
+        markdownNav.style.display = 'none';
+    }
+    if (validResults.length === 0) {
+        const noResourceCard = document.createElement('div');
+        noResourceCard.className = 'card';
+        noResourceCard.onclick = () => loadMarkdown('pages/home.md');
+        noResourceCard.style.cursor = 'pointer';
+        noResourceCard.innerHTML = `<p>No resources could be found, click to return to the main directory.</p>`;
+        resultsContainer.appendChild(noResourceCard);
+        return;
+    }
+    validResults.forEach(article => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => loadMarkdown(article.path);
+        card.style.cursor = 'pointer';
+        const title = document.createElement('h3');
+        title.textContent = article.title;
+        card.appendChild(title);
+        const description = document.createElement('p');
+        description.textContent = article.description || "No description available";
+        card.appendChild(description);
+        resultsContainer.appendChild(card);
+    });
+}
+
+async function searchArticles(dice = false) {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    let results;
+    results = query.includes("faq") || query.includes("ama")
+        ? huntCache.filter(article => article.ama === true)
+        : huntCache.filter(article =>
+            ["title", "description", "img"].some(key =>
+                article[key] && article[key].toLowerCase().includes(query)
+            )
+        );
+    markdownContent.classList.add('hidden');
+    markdownContent.style.display = 'none';
+    await displayResults(results, dice);
+    resultsContainer.classList.remove('hidden');
+}
+
 function articleExists(path) {
-    return dataStore.articles.some(article => article.path === path);
+    return huntCache.some(article => article.path === path);
 }

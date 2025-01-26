@@ -22,3 +22,4 @@
 | **Introduced** | **Feature**                          | **Description**                               |
 |:------------:|:------------------------------------:|:---------------------------------------------:|
 |  22 Jan 2025         | **Credits with a Profile**                     | No longer need to tab to notes to find credit.       |
+|  26 Jan 2025         | **Discovery Search System**                     | Search result quality directly affected by previous pages explored.       |

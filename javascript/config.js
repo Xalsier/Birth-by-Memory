@@ -28,26 +28,7 @@ const nameSuffixes = [
     'Fox', 'Rabbit', 'Raccoon', 'Fox', 'Bunny', 'Turtle', 
     'Cat', 'Moth', 'Slug', 'Hyena', 'Bee', 'Bnnuy', 'Wolf',
     'Goat', 'Llama', 'Birb', 'Raven', 'Parakeet', 'Finch'];
-// Fetch Articles and Initialize
-const fetchArticles = async () => {
-    try {
-        const res = await fetch('./articles.json');
-        if (!res.ok) throw new Error('Failed to load articles: ' + res.statusText);
-        dataStore.articles = await res.json();
-        console.log('Articles loaded:', dataStore.articles);
-    } catch (error) {
-        console.error('Error fetching articles:', error);
-    }
-};
 
-// Immediately fetch articles on initialization
-(async () => {
-    try {
-        await fetchArticles();
-    } catch (error) {
-        console.error('Initialization error:', error);
-    }
-})();
 const resultsContainer = document.getElementById('resultsContainer');
 const markdownContent = document.getElementById('markdownContent');
 const markdownNav = document.getElementById('markdownNav');
@@ -72,4 +53,3 @@ function toggleNavDisplay(element) {
         element.style.display = 'none';
     }
 }
-
