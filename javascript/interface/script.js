@@ -1,4 +1,13 @@
-const huntCache = [];
+const huntCache = [
+  {
+      title: "Ecosystem Directory",
+      description: "Main directory for the ecosystem.",
+      path: "pages/home.md",
+      img: null,
+      class: "Directory",
+      isError: false,
+  }
+];
 let titleTracker = [];
 
 function getBestTitle(titles) {
